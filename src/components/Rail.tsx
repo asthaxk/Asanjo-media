@@ -43,6 +43,11 @@ export default function Rail({ works }: { works: Work[] }) {
       lenis = new Lenis({
         wrapper: wrapper.current,
         content: content.current,
+        // Listen on the window, not the rail. Supplying a `wrapper` otherwise
+        // binds events to it, and a wheel anywhere else in the fold — over the
+        // wordmark, the copy, the empty paper — would hit a page that cannot
+        // scroll and do nothing at all.
+        eventsTarget: window,
         orientation: "horizontal",
         gestureOrientation: "both",
         duration: 1.2,
