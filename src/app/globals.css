@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-paper: #fbfbf9;
+  --color-muted: #6b6b66;
+  --font-sans: "Switzer", "Neue Montreal", "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+}
+
+:root {
+  --gutter: 3vw;
+}
+
+html {
+  background: var(--color-paper);
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+body[data-intro="running"] {
+  overflow: hidden;
+  height: 100svh;
+}
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+/* Display type ------------------------------------------------------ */
+
+.display {
+  line-height: 0.82;
+  letter-spacing: -0.035em;
+  font-weight: 400;
+  margin: 0;
+}
+
+.eyebrow {
+  font-size: 0.76rem;
+  letter-spacing: 0.14em;
+}
+
+/* Reveal fallback: if JS never runs, content is still visible --------- */
+
+.js .reveal {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Media -------------------------------------------------------------- */
+
+.frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #ececea;
+}
+
+.frame img,
+.frame video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.frame video {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.frame video[data-ready="true"] {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

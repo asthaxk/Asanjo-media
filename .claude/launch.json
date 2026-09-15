@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "asanjo", "runtimeExecutable": "npm", "runtimeArgs": ["run", "dev", "--", "-p", "4321"], "port": 4321 }
+  ]
+}
