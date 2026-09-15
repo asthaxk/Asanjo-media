@@ -1,6 +1,5 @@
 import Hero from "@/components/Hero";
 import Rail from "@/components/Rail";
-import Reveal from "@/components/Reveal";
 import SplitLines from "@/components/SplitLines";
 import { WORKS } from "@/lib/works";
 
@@ -32,25 +31,6 @@ export default function Home() {
         <div id="works" className="order-2 md:order-none">
           <Rail works={WORKS} />
         </div>
-
-        {/* Contact lives in the nav on desktop; the phone gets a real footer. */}
-        <footer
-          id="contact"
-          className="order-3 border-t border-ink/10 px-[var(--gutter)] pb-[6vh] pt-[16vh] md:hidden"
-        >
-          <Reveal>
-            <a
-              href="mailto:hello@asanjo.media"
-              className="inline-block text-[clamp(1.6rem,7vw,6.5rem)] leading-none tracking-[-0.03em] transition-opacity hover:opacity-55"
-            >
-              hello@asanjo.media
-            </a>
-          </Reveal>
-          <div className="eyebrow mt-[8vh] flex flex-col gap-2 text-muted">
-            <span>© 2026 Asanjo Media</span>
-            <span>All rights reserved</span>
-          </div>
-        </footer>
       </main>
     </>
   );

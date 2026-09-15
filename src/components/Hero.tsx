@@ -20,30 +20,20 @@ export default function Hero() {
     const page = document.querySelector<HTMLElement>(".js-page");
     const gutter = () => window.innerWidth * 0.03;
 
-    /**
-     * On narrow screens the two words also grow as they separate, so each one
-     * spans the full column the way the lockup did — the corners read as type,
-     * not as leftovers. On desktop the lockup is already wide enough, so the
-     * words only travel.
-     *
-     * Each word scales from the corner it is heading to, which keeps the maths
-     * simple: the anchored edge does not move, so the same translation works at
-     * any scale.
-     */
-    const restScale = () => {
-      if (window.matchMedia("(min-width: 768px)").matches) return 1;
-      const w = w1.current!.getBoundingClientRect().width;
-      return w ? (window.innerWidth - gutter() * 2) / w : 1;
-    };
+    const isDesktop = () => window.matchMedia("(min-width: 768px)").matches;
 
-    // Measured live, so they must only be read once the wordmark is full size —
-    // GSAP resolves function-based values at tween init, which is too early.
+    /**
+     * Desktop keeps both words: they travel apart to opposite corners at the
+     * size they already are.
+     *
+     * Measured live, so they must only be read once the wordmark is full size —
+     * GSAP resolves function-based values at tween init, which is too early.
+     */
     const restA = () => {
       const r = w1.current!.getBoundingClientRect();
       return {
         x: gutter() - r.left,
         y: window.innerHeight * 0.1 - r.top,
-        scale: restScale(),
         transformOrigin: "left top",
       };
     };
@@ -52,8 +42,24 @@ export default function Hero() {
       return {
         x: window.innerWidth - gutter() - r.right,
         y: window.innerHeight * 0.9 - r.bottom,
-        scale: restScale(),
         transformOrigin: "right bottom",
+      };
+    };
+
+    /**
+     * Phone: the lockup zooms as a single unit, anchored to the first word's
+     * top-left corner, until ASANJO fills the column. MEDIA rides along and
+     * leaves past the right edge, so the zoomed state is one word — the way the
+     * reference resolves to a lone ET.
+     */
+    const restZoom = () => {
+      const rl = line.current!.getBoundingClientRect();
+      const rw = w1.current!.getBoundingClientRect();
+      return {
+        x: gutter() - rl.left,
+        y: window.innerHeight * 0.1 - rl.top,
+        scale: rw.width ? (window.innerWidth - gutter() * 2) / rw.width : 1,
+        transformOrigin: "left top",
       };
     };
 
@@ -69,8 +75,12 @@ export default function Hero() {
 
       if (reduced) {
         gsap.set(line.current, { scale: 1, opacity: 1 });
-        gsap.set(w1.current, restA());
-        gsap.set(w2.current, restB());
+        if (isDesktop()) {
+          gsap.set(w1.current, restA());
+          gsap.set(w2.current, restB());
+        } else {
+          gsap.set(line.current, restZoom());
+        }
         gsap.set([nav.current, cue.current, cueLabel.current, page], { opacity: 1 });
         done();
         return;
@@ -78,14 +88,28 @@ export default function Hero() {
 
       document.body.dataset.intro = "running";
 
-      // 3 — words split to the top-left and bottom-right corners
+      // 3 — desktop splits to opposite corners; phone zooms into the first word
       const split = () => {
-        gsap
-          .timeline({ defaults: { ease: "power4.inOut" }, onComplete: done })
-          .to(w1.current, { ...restA(), duration: 1.4 })
-          .to(w2.current, { ...restB(), duration: 1.4 }, "<")
-          .to(cueLabel.current, { opacity: 1, duration: 0.6, ease: "power3.out" }, "-=0.8")
-          .to([nav.current, page], { opacity: 1, duration: 0.7, ease: "power3.out" }, "-=0.5");
+        const tl = gsap.timeline({
+          defaults: { ease: "power4.inOut" },
+          onComplete: done,
+        });
+
+        if (isDesktop()) {
+          tl.to(w1.current, { ...restA(), duration: 1.4 }).to(
+            w2.current,
+            { ...restB(), duration: 1.4 },
+            "<"
+          );
+        } else {
+          tl.to(line.current, { ...restZoom(), duration: 1.6 });
+        }
+
+        tl.to(cueLabel.current, { opacity: 1, duration: 0.6, ease: "power3.out" }, "-=0.8").to(
+          [nav.current, page],
+          { opacity: 1, duration: 0.7, ease: "power3.out" },
+          "-=0.5"
+        );
       };
 
       gsap
@@ -120,7 +144,7 @@ export default function Hero() {
           {[
             ["STUDIO", "#studio"],
             ["WORKS", "#works"],
-            ["CONTACT", "#contact"],
+            ["CONTACT", "mailto:hello@asanjo.media"],
           ].map(([label, href]) => (
             <a
               key={href}
