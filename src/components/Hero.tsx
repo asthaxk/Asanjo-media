@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { useIsomorphicLayoutEffect } from "@/lib/useIsomorphicLayoutEffect";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 const SMALL = 0.14;
 
@@ -102,7 +102,36 @@ export default function Hero() {
             "<"
           );
         } else {
-          tl.to(line.current, { ...restZoom(), duration: 1.6 });
+          tl.to(line.current, { ...restZoom(), duration: 1.6 }).add(() => {
+            // Collapse the hero to the wordmark so the page below it starts
+            // immediately, instead of a screen's worth of empty paper.
+            //
+            // The wordmark is anchored at top/left 50% of this section, so it
+            // has to be re-pinned in pixels first — otherwise shrinking the
+            // section drags it along. Scale and its origin are left alone, so
+            // nothing moves on screen.
+            const rl = line.current!.getBoundingClientRect();
+            const top = rl.top - root.current!.getBoundingClientRect().top;
+            gsap.set(line.current, {
+              left: Math.round(rl.left),
+              top: Math.round(top),
+              xPercent: 0,
+              yPercent: 0,
+              x: 0,
+              y: 0,
+            });
+
+            gsap.set(root.current, {
+              "--hero-h": `${Math.round(
+                w1.current!.getBoundingClientRect().bottom +
+                  window.innerHeight * 0.03
+              )}px`,
+            });
+
+            // Everything below just moved up a screen; scroll positions cached
+            // before the collapse are now wrong.
+            ScrollTrigger.refresh();
+          });
         }
 
         tl.to(cueLabel.current, { opacity: 1, duration: 0.6, ease: "power3.out" }, "-=0.8").to(
@@ -133,7 +162,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section ref={root} className="relative h-[100svh] w-full overflow-hidden">
+    <section ref={root} className="hero relative w-full overflow-hidden">
       <header
         ref={nav}
         className="fixed inset-x-0 top-0 z-20 flex items-baseline justify-between px-[var(--gutter)] pt-9 opacity-0 mix-blend-difference"
@@ -149,7 +178,7 @@ export default function Hero() {
             <a
               key={href}
               href={href}
-              className="eyebrow text-white/90 transition-opacity hover:opacity-50"
+              className="eyebrow text-[0.9rem] text-white/90 transition-opacity hover:opacity-50 md:text-[0.76rem]"
             >
               {label}
             </a>

@@ -67,6 +67,21 @@ body[data-intro="running"] {
   will-change: transform, opacity;
 }
 
+/* Hero ---------------------------------------------------------------- */
+
+.hero {
+  height: 100svh;
+}
+
+/* On a phone the hero is only tall enough to hold the wordmark: once the intro
+   settles, the intro sets --hero-h so the copy follows straight after it rather
+   than a screen later. Desktop stays a full fold. */
+@media (max-width: 767px) {
+  .hero {
+    height: var(--hero-h, 100svh);
+  }
+}
+
 /* Horizontal work rail (phone) --------------------------------------- */
 
 .rail {

@@ -20,7 +20,7 @@ export default function Home() {
       <main className="js-page flex flex-col opacity-0">
         <section
           id="studio"
-          className="order-1 px-[var(--gutter)] pb-[12vh] pt-[12vh] md:fixed md:bottom-[8vh] md:left-0 md:z-10 md:order-none md:p-0 md:pl-[var(--gutter)]"
+          className="order-1 px-[var(--gutter)] pb-[12vh] pt-[7vh] md:fixed md:bottom-[8vh] md:left-0 md:z-10 md:order-none md:p-0 md:pl-[var(--gutter)]"
         >
           <SplitLines
             text={ABOUT}
