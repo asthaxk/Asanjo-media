@@ -57,6 +57,25 @@ body[data-intro="running"] {
   will-change: transform, opacity;
 }
 
+/* Horizontal work rail (phone) --------------------------------------- */
+
+.rail {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* let the last card sit clear of the right gutter */
+  scroll-padding-left: var(--gutter);
+  /* A horizontal rail must never eat a vertical gesture: allow both pans so
+     dragging up the page still scrolls the page, and stop only horizontal
+     overscroll from chaining out to the document. */
+  touch-action: pan-x pan-y;
+  overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
 /* Media -------------------------------------------------------------- */
 
 .frame {

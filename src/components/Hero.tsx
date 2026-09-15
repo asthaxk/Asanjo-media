@@ -20,18 +20,40 @@ export default function Hero() {
     const page = document.querySelector<HTMLElement>(".js-page");
     const gutter = () => window.innerWidth * 0.03;
 
-    // Final resting places: first word top-left, second word bottom-right.
+    /**
+     * On narrow screens the two words also grow as they separate, so each one
+     * spans the full column the way the lockup did — the corners read as type,
+     * not as leftovers. On desktop the lockup is already wide enough, so the
+     * words only travel.
+     *
+     * Each word scales from the corner it is heading to, which keeps the maths
+     * simple: the anchored edge does not move, so the same translation works at
+     * any scale.
+     */
+    const restScale = () => {
+      if (window.matchMedia("(min-width: 768px)").matches) return 1;
+      const w = w1.current!.getBoundingClientRect().width;
+      return w ? (window.innerWidth - gutter() * 2) / w : 1;
+    };
+
     // Measured live, so they must only be read once the wordmark is full size —
     // GSAP resolves function-based values at tween init, which is too early.
     const restA = () => {
       const r = w1.current!.getBoundingClientRect();
-      return { x: gutter() - r.left, y: window.innerHeight * 0.1 - r.top };
+      return {
+        x: gutter() - r.left,
+        y: window.innerHeight * 0.1 - r.top,
+        scale: restScale(),
+        transformOrigin: "left top",
+      };
     };
     const restB = () => {
       const r = w2.current!.getBoundingClientRect();
       return {
         x: window.innerWidth - gutter() - r.right,
         y: window.innerHeight * 0.9 - r.bottom,
+        scale: restScale(),
+        transformOrigin: "right bottom",
       };
     };
 
@@ -90,8 +112,8 @@ export default function Hero() {
         className="fixed inset-x-0 top-0 z-20 flex items-baseline justify-between px-[var(--gutter)] pt-9 opacity-0 mix-blend-difference"
         aria-label="Primary"
       >
-        <span className="eyebrow text-white">ASANJO</span>
-        <nav className="flex gap-[clamp(2rem,12vw,16rem)]">
+        <span className="eyebrow hidden text-white md:block">ASANJO</span>
+        <nav className="flex w-full justify-between md:w-auto md:justify-end md:gap-[clamp(2rem,12vw,16rem)]">
           {[
             ["STUDIO", "#studio"],
             ["WORKS", "#works"],
@@ -110,7 +132,7 @@ export default function Hero() {
 
       <h1
         ref={line}
-        className="display absolute left-1/2 top-1/2 flex flex-col items-start gap-0 whitespace-nowrap text-[17vw] opacity-0 will-change-transform md:flex-row md:gap-[0.22em] md:text-[11.6vw]"
+        className="display absolute left-1/2 top-1/2 flex gap-[0.1em] whitespace-nowrap text-[11.6vw] opacity-0 will-change-transform md:gap-[0.22em]"
       >
         <span ref={w1} className="block will-change-transform">
           ASANJO
@@ -122,7 +144,7 @@ export default function Hero() {
 
       <div
         ref={cue}
-        className="absolute left-1/2 top-[42%] flex -translate-x-1/2 items-center gap-3 opacity-0"
+        className="absolute left-1/2 top-[42%] hidden -translate-x-1/2 items-center gap-3 opacity-0 md:flex"
         aria-hidden="true"
       >
         <span className="block h-[7px] w-[7px] rounded-full bg-ink" />
