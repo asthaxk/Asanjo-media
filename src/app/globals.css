@@ -31,6 +31,16 @@ body[data-intro="running"] {
   height: 100svh;
 }
 
+/* Desktop is a single fold — the page itself never scrolls vertically.
+   Only the work rail moves, horizontally. */
+@media (min-width: 768px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
 ::selection {
   background: var(--color-ink);
   color: var(--color-paper);
@@ -70,6 +80,15 @@ body[data-intro="running"] {
   touch-action: pan-x pan-y;
   overscroll-behavior-x: contain;
   overscroll-behavior-y: auto;
+}
+
+/* Desktop: the rail is the scroller, so it may contain its own overscroll
+   entirely — there is no page scroll for it to chain into. */
+@media (min-width: 768px) {
+  .rail {
+    overscroll-behavior: contain;
+    touch-action: pan-x;
+  }
 }
 
 .rail::-webkit-scrollbar {

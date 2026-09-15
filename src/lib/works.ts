@@ -57,4 +57,25 @@ export const WORKS: Work[] = [
     poster: unsplash("1439066615861-d1af74d74000"),
     alt: "Bare trees in winter light",
   },
+  {
+    slug: "low-tide",
+    title: "Low Tide",
+    discipline: "Brand Film",
+    poster: unsplash("1505144808419-1957a94ca61e"),
+    alt: "Waves breaking on a pale shoreline",
+  },
+  {
+    slug: "cold-open",
+    title: "Cold Open",
+    discipline: "Motion",
+    poster: unsplash("1418065460487-3e41a6c84dc5"),
+    alt: "Low sun across an open field",
+  },
+  {
+    slug: "afterlight",
+    title: "Afterlight",
+    discipline: "Photography",
+    poster: unsplash("1433086966358-54859d0ed716"),
+    alt: "A waterfall under a stone bridge",
+  },
 ];

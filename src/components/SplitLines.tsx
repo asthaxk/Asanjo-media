@@ -22,19 +22,41 @@ export default function SplitLines({
   const words = text.split(" ");
 
   useIsomorphicLayoutEffect(() => {
+    // Desktop is a single fold with no page scroll, so there is no scroll
+    // position that could ever trigger this — play it off the intro instead.
+    const pinned = window.matchMedia("(min-width: 768px)").matches;
+
     const ctx = gsap.context(() => {
-      gsap.fromTo(
-        ".js-word",
-        { yPercent: 110 },
-        {
-          yPercent: 0,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger,
-          scrollTrigger: { trigger: el.current, start: "top 85%", once: true },
-        }
-      );
+      const rise = () =>
+        gsap.fromTo(
+          ".js-word",
+          { yPercent: 110 },
+          {
+            yPercent: 0,
+            duration: 0.9,
+            ease: "power3.out",
+            stagger,
+            ...(pinned
+              ? {}
+              : {
+                  scrollTrigger: {
+                    trigger: el.current,
+                    start: "top 85%",
+                    once: true,
+                  },
+                }),
+          }
+        );
+
+      if (!pinned) {
+        rise();
+        return;
+      }
+
+      if (document.body.dataset.intro === "done") rise();
+      else window.addEventListener("intro:done", rise, { once: true });
     }, el);
+
     return () => ctx.revert();
   }, [stagger]);
 

@@ -62,6 +62,9 @@ export default function Hero() {
 
       const done = () => {
         document.body.dataset.intro = "done";
+        // Desktop has no page scroll, so anything that would normally wait for
+        // a ScrollTrigger keys off this instead.
+        window.dispatchEvent(new Event("intro:done"));
       };
 
       if (reduced) {
@@ -144,12 +147,12 @@ export default function Hero() {
 
       <div
         ref={cue}
-        className="absolute left-1/2 top-[42%] hidden -translate-x-1/2 items-center gap-3 opacity-0 md:flex"
+        className="absolute left-1/2 top-[22%] hidden -translate-x-1/2 items-center gap-3 opacity-0 md:flex"
         aria-hidden="true"
       >
         <span className="block h-[7px] w-[7px] rounded-full bg-ink" />
         <span ref={cueLabel} className="eyebrow opacity-0">
-          SCROLL
+          SCROLL&nbsp;&rarr;
         </span>
       </div>
     </section>
